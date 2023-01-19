@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  userName   String   @unique
+  password   String
+}
+
+model Assessment{
+  id         Int      @id @default(autoincrement())
+  sections   Assess_Group[]
+}
+
+model Assess_Group {
+  id         Int      @id @default(autoincrement())
+  questions  Assess_Question[]
+  assess     Assessment @relation(fields: [assessId], references: [id])
+  assessId   Int
+}
+
+model Assess_Question{
+  id         Int      @id @default(autoincrement())
+  question   String   @unique
+  answers    Answers[]
+  group    Assess_Group @relation(fields: [groupId], references: [id])
+  groupId    Int
+}
+
+model Answers{
+  id           Int      @id @default(autoincrement())
+  answers      String   @unique
+  question     Assess_Question @relation(fields: [questionId], references: [id])
+  questionId   Int
+}
